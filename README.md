@@ -17,4 +17,35 @@
 - HTTPs
 - Tree Shaking - remove unused code
 - Different Dev and Prod Bundles
--
+- Namste-Food App
+
+Header
+
+- Logo
+- NavItems
+  Body
+- Restaurent Container
+- Restaurent Card
+- Search
+  Footer
+- CopyRight
+- Links
+- Address
+- Contact
+
+Two Types of Export -
+
+1. Default Export -
+   export default component;
+   import component from "Location"
+
+2. Named Export -
+   export const component;
+   import {component} from "Location
+
+React Hooks
+Noramal JS utility Functions
+State variable - Super Powerful variable || Maintains the state of the varaible
+
+- useState()
+- useEffect()
