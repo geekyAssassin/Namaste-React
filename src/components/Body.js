@@ -1,26 +1,83 @@
 import RestaurentCard from "./RestaurentCard";
-import resList from "../utils/MockData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Body = () => {
   // React Hooks
-  let [listOfRestuarents, setListOfRestuarents] = useState(resList);
+  const [listOfRestuarents, setListOfRestuarents] = useState([]);
+  const [filteredRestuarent, setFilteredRestuarent] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
+    );
+
+    const json = await data.json();
+    console.log(json);
+
+    // Optional Chaining
+    setListOfRestuarents(
+      json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+
+    setFilteredRestuarent(
+      json?.data?.cards[5]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+  };
+  console.log("Body Rendered");
+
   return (
     <div className="body">
-      <button
-        className="filter"
-        onClick={() => {
-          const filteredList = listOfRestuarents.filter(
-            (res) => res.data.avgRating > 4
-          );
-          setListOfRestuarents(filteredList);
-        }}
-      >
-        Top Rated Restuarents
-      </button>
+      <div className="filter">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
+
+          <button
+            onClick={() => {
+              // Filter the restraunt cards and update the UI
+              // searchText
+              console.log(searchText);
+
+              const filteredRestaurant = listOfRestuarents.filter((res) =>
+                res.info.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+
+              setFilteredRestuarent(filteredRestaurant);
+            }}
+          >
+            Search
+          </button>
+        </div>
+        <button
+          className="filter-btn"
+          onClick={() => {
+            const filteredList = listOfRestuarents.filter(
+              (res) => res.info.avgRating > 4
+            );
+            setFilteredRestuarent(filteredList);
+          }}
+        >
+          Top Rated Restaurants
+        </button>
+      </div>
       <div className="res-container">
-        {listOfRestuarents.map((restaurant) => (
-          <RestaurentCard key={restaurant.data.id} resData={restaurant} />
+        {filteredRestuarent.map((restaurant) => (
+          <RestaurentCard
+            key={restaurant?.info.id}
+            resData={restaurant?.info}
+          />
         ))}
       </div>
     </div>
